@@ -1,0 +1,203 @@
+const express = require('express');
+const { PDFDocument } = require('pdf-lib');
+const puppeteer = require('puppeteer-core');
+const chromium = require('@sparticuz/chromium');
+const multer = require('multer');
+
+const app = express();
+const upload = multer({ storage: multer.memoryStorage() });
+
+const assignmentTemplate = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Assignment Cover Page</title>
+  <style>
+    @page { size: A4; margin: 15mm; }
+    body { font-family: "Times New Roman", Times, serif; margin: 0; padding: 0; }
+    .container { width: 100%; border: 2px solid #000; padding: 25px 30px; box-sizing: border-box; page-break-inside: avoid; min-height: calc(297mm - 30mm); }
+    .header { text-align: center; margin-bottom: 40px; }
+    .university-name { font-size: 28px; font-weight: bold; }
+    .department-name { font-size: 18px; }
+    hr.dotted-line { border: none; border-top: 2px dashed #000; margin: 35px 0 50px; }
+    .title { text-align: center; font-size: 24px; font-weight: bold; text-decoration: underline; margin: 10px 0 60px; }
+    .assignment-info { font-size: 18px; display: grid; grid-template-columns: max-content max-content 1fr; column-gap: 10px; row-gap: 40px; max-width: 100%; margin-bottom: 60px; }
+    .label { white-space: nowrap; }
+    .colon { text-align: center; }
+    .value { font-weight: bold; }
+    .submitted-to-title { margin-top: 60px; margin-bottom: 40px; font-weight: bold; text-decoration: underline; font-size: 18px; }
+    .section-title { font-size: 18px; margin-top: 70px; font-weight: bold; text-decoration: underline; margin-bottom: 30px; }
+    .submitted-section { margin-top: 30px; display: flex; justify-content: space-between; }
+    .info-table { width: 380px; border-collapse: collapse; font-size: 16px; }
+    .info-table th, .info-table td { border: 1px solid #000; padding: 6px 10px; text-align: left; }
+    .remarks-box { border: 2px solid black; width: 200px; height: 120px; margin-left: 20px; display: flex; align-items: center; justify-content: center; position: relative; font-size: 16px; }
+    .remarks-text { position: absolute; top: 5px; left: 0; width: 100%; text-align: center; font-weight: bold; border-bottom: 1px solid black; padding-bottom: 5px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="<YOUR_CDN_LOGO_URL>" alt="Premier University Logo" />
+      <div class="university-name">PREMIER UNIVERSITY</div>
+      <div class="department-name">Department of Computer Science & Engineering</div>
+    </div>
+    <hr class="dotted-line" />
+    <div class="title">Assignment</div>
+    <div class="assignment-info">
+      <div class="label">Assignment No.</div><div class="colon">:</div><div class="value">{{assignment_no}}</div>
+      <div class="label">Course Code</div><div class="colon">:</div><div class="value">{{course_code}}</div>
+      <div class="label">Course Title</div><div class="colon">:</div><div class="value">{{course_title}}</div>
+      <div class="label">Assignment Name</div><div class="colon">:</div><div class="value">{{assignment_name}}</div>
+      <div class="label">Date of Submission</div><div class="colon">:</div><div class="value">{{submission_date}}</div>
+    </div>
+    <div class="submitted-to-title">Submitted to</div>
+    <div class="section-title">Submitted by</div>
+    <div class="submitted-section">
+      <div>
+        <table class="info-table">
+          <tr><th>Name</th><td>{{student_name}}</td></tr>
+          <tr><th>ID</th><td>{{student_id}}</td></tr>
+          <tr><th>Program</th><td>B.Sc. in CSE</td></tr>
+          <tr><th>Batch</th><td>41</td></tr>
+          <tr><th>Section</th><td>C</td></tr>
+          <tr><th>Session</th><td>Spring 2025</td></tr>
+        </table>
+      </div>
+      <div class="remarks-box">
+        <div class="remarks-text">Remarks</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+const labTemplate = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lab Report Cover Page</title>
+  <style>
+    @page { size: A4; margin: 15mm; }
+    body { font-family: "Times New Roman", Times, serif; margin: 0; padding: 0; }
+    .container { width: 100%; border: 2px solid #000; padding: 25px 30px; box-sizing: border-box; page-break-inside: avoid; min-height: calc(297mm - 30mm); }
+    .header { text-align: center; margin-bottom: 40px; }
+    .university-name { font-size: 28px; font-weight: bold; }
+    .department-name { font-size: 18px; }
+    hr.dotted-line { border: none; border-top: 2px dashed #000; margin: 35px 0 50px; }
+    .title { text-align: center; font-size: 24px; font-weight: bold; text-decoration: underline; margin: 10px 0 60px; }
+    .assignment-info { font-size: 18px; display: grid; grid-template-columns: max-content max-content 1fr; column-gap: 10px; row-gap: 40px; max-width: 100%; margin-bottom: 60px; }
+    .label { white-space: nowrap; }
+    .colon { text-align: center; }
+    .value { font-weight: bold; }
+    .submitted-to-title { margin-top: 60px; margin-bottom: 40px; font-weight: bold; text-decoration: underline; font-size: 18px; }
+    .section-title { font-size: 18px; margin-top: 70px; font-weight: bold; text-decoration: underline; margin-bottom: 30px; }
+    .submitted-section { margin-top: 30px; display: flex; justify-content: space-between; }
+    .info-table { width: 380px; border-collapse: collapse; font-size: 16px; }
+    .info-table th, .info-table td { border: 1px solid #000; padding: 6px 10px; text-align: left; }
+    .remarks-box { border: 2px solid black; width: 200px; height: 120px; margin-left: 20px; display: flex; align-items: center; justify-content: center; position: relative; font-size: 16px; }
+    .remarks-text { position: absolute; top: 5px; left: 0; width: 100%; text-align: center; font-weight: bold; border-bottom: 1px solid black; padding-bottom: 5px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="<YOUR_CDN_LOGO_URL>" alt="Premier University Logo" />
+      <div class="university-name">PREMIER UNIVERSITY</div>
+      <div class="department-name">Department of Computer Science & Engineering</div>
+    </div>
+    <hr class="dotted-line" />
+    <div class="title">Lab Report</div>
+    <div class="assignment-info">
+      <div class="label">Lab Report No.</div><div class="colon">:</div><div class="value">{{assignment_no}}</div>
+      <div class="label">Course Code</div><div class="colon">:</div><div class="value">{{course_code}}</div>
+      <div class="label">Course Title</div><div class="colon">:</div><div class="value">{{course_title}}</div>
+      <div class="label">Report Name</div><div class="colon">:</div><div class="value">{{assignment_name}}</div>
+      <div class="label">Date of Submission</div><div class="colon">:</div><div class="value">{{submission_date}}</div>
+    </div>
+    <div class="submitted-to-title">Submitted to</div>
+    <div class="section-title">Submitted by</div>
+    <div class="submitted-section">
+      <div>
+        <table class="info-table">
+          <tr><th>Name</th><td>{{student_name}}</td></tr>
+          <tr><th>ID</th><td>{{student_id}}</td></tr>
+          <tr><th>Program</th><td>B.Sc. in CSE</td></tr>
+          <tr><th>Batch</th><td>41</td></tr>
+          <tr><th>Section</th><td>C</td></tr>
+          <tr><th>Session</th><td>Spring 2025</td></tr>
+        </table>
+      </div>
+      <div class="remarks-box">
+        <div class="remarks-text">Remarks</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+app.use(express.json());
+
+app.post('/api/generate', upload.single('assignment_file'), async (req, res) => {
+  try {
+    const { coverType, assignment_no, course_code, course_title, assignment_name, submission_date, student_name, student_id, outputType } = req.body;
+
+    if (!coverType || !['assignment', 'lab'].includes(coverType)) {
+      return res.status(400).json({ error: 'Invalid cover type' });
+    }
+
+    if (!assignment_no || !course_code || !course_title || !assignment_name || !submission_date || !student_name || !student_id) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    if (outputType === 'merged' && (!req.file || req.file.mimetype !== 'application/pdf')) {
+      return res.status(400).json({ error: 'A valid PDF file is required for merged output' });
+    }
+
+    const template = coverType === 'assignment' ? assignmentTemplate : labTemplate;
+    const html = template
+      .replace('{{assignment_no}}', assignment_no)
+      .replace('{{course_code}}', course_code)
+      .replace('{{course_title}}', course_title)
+      .replace('{{assignment_name}}', assignment_name)
+      .replace('{{submission_date}}', submission_date)
+      .replace('{{student_name}}', student_name)
+      .replace('{{student_id}}', student_id);
+
+    const browser = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless
+    });
+    const page = await browser.newPage();
+    await page.setContent(html);
+    const coverPdfBuffer = await page.pdf({ format: 'A4' });
+    await browser.close();
+
+    const finalPdf = await PDFDocument.create();
+    const coverDoc = await PDFDocument.load(coverPdfBuffer);
+    const coverPages = await finalPdf.copyPages(coverDoc, coverDoc.getPageIndices());
+    coverPages.forEach(page => finalPdf.addPage(page));
+
+    if (outputType === 'merged' && req.file) {
+      const uploadedDoc = await PDFDocument.load(req.file.buffer);
+      const uploadedPages = await finalPdf.copyPages(uploadedDoc, uploadedDoc.getPageIndices());
+      uploadedPages.forEach(page => finalPdf.addPage(page));
+    }
+
+    const pdfBytes = await finalPdf.save();
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename=${coverType}_cover.pdf`
+    });
+    res.send(pdfBytes);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    res.status(500).json({ error: error.message || 'Failed to generate PDF' });
+  }
+});
+
+module.exports = app;
