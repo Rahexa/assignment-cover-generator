@@ -1,0 +1,20 @@
+This is a test document to verify that our backend can handle document merging.
+
+Introduction:
+This document demonstrates the functionality of our Assignment Cover Generator with multi-format file support.
+
+Key Features:
+1. PDF Generation with professional formatting
+2. DOC/DOCX file conversion support
+3. Ultra-modern reddish dark theme interface
+4. Glass morphism effects with neon glow
+5. Responsive design for all devices
+
+Technical Implementation:
+- Backend: Express.js with Puppeteer and Mammoth.js
+- Frontend: React with modern CSS animations
+- File Processing: Automatic DOC/DOCX to PDF conversion
+- Theme: Dark gradient backgrounds with red accent colors
+
+Conclusion:
+The system successfully combines modern UI design with robust file processing capabilities.
