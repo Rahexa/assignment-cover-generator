@@ -373,12 +373,6 @@ function App() {
       });
       formDataToSend.append('outputType', outputType === 'cover' ? 'cover_only' : 'merged');
       
-      // Debug: Log what we're sending
-      console.log('Sending data:');
-      for (let [key, value] of formDataToSend.entries()) {
-        console.log(key, value);
-      }
-      
       if (file && outputType === 'merged') {
         formDataToSend.append('assignment_file', file);
       }
@@ -389,14 +383,7 @@ function App() {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Server error response:', errorText);
-        let errorData;
-        try {
-          errorData = JSON.parse(errorText);
-        } catch (e) {
-          errorData = { error: errorText };
-        }
+        const errorData = await response.json();
         throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
 
@@ -484,7 +471,7 @@ function App() {
         <div style={{
           maxWidth: '1200px',
           margin: '0 auto',
-          padding: '0.5rem 1rem',
+          padding: '1rem 1rem',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -493,7 +480,7 @@ function App() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <div>
               <h1 style={{
-                fontSize: '1.75rem',
+                fontSize: '2rem',
                 fontWeight: 'bold',
                 background: 'linear-gradient(135deg, #dc2626, #ef4444)',
                 backgroundClip: 'text',
@@ -511,11 +498,11 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main style={{ maxWidth: '1300px', margin: '0 auto', padding: '0.25rem', position: 'relative', zIndex: 5 }}>
+      <main style={{ maxWidth: '1250px', margin: '0 auto', padding: '0.25rem', position: 'relative', zIndex: 5 }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 320px',
-          gap: '0.75rem'
+          gridTemplateColumns: '1fr 350px',
+          gap: '1rem'
         }}>
           
           {/* Main Form Card */}
@@ -579,34 +566,34 @@ function App() {
           )}
 
           {/* Form Fields */}
-          <div style={{ display: 'grid', gap: '0.5rem', position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'grid', gap: '1rem', position: 'relative', zIndex: 1 }}>
             
             {/* Cover Type Selection */}
             <div style={{
               background: 'rgba(30, 30, 30, 0.6)',
               borderRadius: '0.5rem',
-              padding: '0.5rem',
+              padding: '1rem',
               border: '1px solid rgba(75, 85, 99, 0.3)',
               backdropFilter: 'blur(10px)'
             }}>
               <h3 style={{
-                fontSize: '0.85rem',
+                fontSize: '1rem',
                 fontWeight: '600',
                 color: '#f3f4f6',
-                marginBottom: '0.375rem',
+                marginBottom: '0.75rem',
                 fontFamily: '"Segoe UI", "Roboto", "Arial", sans-serif',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.375rem'
+                gap: '0.5rem'
               }}>
                 📝 Select Cover Type
               </h3>
               
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.375rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
                 <button
                   onClick={() => setCoverType('assignment')}
                   style={{
-                    padding: '0.5rem',
+                    padding: '0.75rem',
                     borderRadius: '0.5rem',
                     border: `2px solid ${coverType === 'assignment' ? '#dc2626' : 'rgba(75, 85, 99, 0.3)'}`,
                     background: coverType === 'assignment' ? 'rgba(40, 20, 20, 0.8)' : 'rgba(30, 30, 30, 0.6)',
@@ -614,24 +601,20 @@ function App() {
                     cursor: 'pointer',
                     textAlign: 'center',
                     transition: 'all 0.2s',
-                    fontSize: '0.75rem',
+                    fontSize: '0.875rem',
                     backdropFilter: 'blur(10px)',
-                    boxShadow: coverType === 'assignment' ? '0 0 20px rgba(220, 38, 38, 0.3)' : 'none',
-                    minHeight: '16px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center'
+                    boxShadow: coverType === 'assignment' ? '0 0 20px rgba(220, 38, 38, 0.3)' : 'none'
                   }}
                 >
-                  <div style={{ fontSize: '1rem', marginBottom: '0.125rem' }}>📄</div>
-                  <div style={{ fontWeight: '600', marginBottom: '0.125rem' }}>Assignment</div>
-                  <div style={{ fontSize: '0.65rem', color: '#9ca3af' }}>Regular assignments</div>
+                  <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>📄</div>
+                  <div style={{ fontWeight: '600' }}>Assignment</div>
+                  <div style={{ fontSize: '0.75rem', color: '#9ca3af' }}>Regular assignments</div>
                 </button>
                 
                 <button
                   onClick={() => setCoverType('lab')}
                   style={{
-                    padding: '0.5rem',
+                    padding: '0.75rem',
                     borderRadius: '0.5rem',
                     border: `2px solid ${coverType === 'lab' ? '#dc2626' : 'rgba(75, 85, 99, 0.3)'}`,
                     background: coverType === 'lab' ? 'rgba(40, 20, 20, 0.8)' : 'rgba(30, 30, 30, 0.6)',
@@ -639,18 +622,14 @@ function App() {
                     cursor: 'pointer',
                     textAlign: 'center',
                     transition: 'all 0.2s',
-                    fontSize: '0.75rem',
+                    fontSize: '0.875rem',
                     backdropFilter: 'blur(10px)',
-                    boxShadow: coverType === 'lab' ? '0 0 20px rgba(220, 38, 38, 0.3)' : 'none',
-                    minHeight: '16px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center'
+                    boxShadow: coverType === 'lab' ? '0 0 20px rgba(220, 38, 38, 0.3)' : 'none'
                   }}
                 >
-                  <div style={{ fontSize: '1rem', marginBottom: '0.125rem' }}>🔬</div>
-                  <div style={{ fontWeight: '600', marginBottom: '0.125rem' }}>Lab Report</div>
-                  <div style={{ fontSize: '0.65rem', color: '#9ca3af' }}>Laboratory reports</div>
+                  <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>🔬</div>
+                  <div style={{ fontWeight: '600' }}>Lab Report</div>
+                  <div style={{ fontSize: '0.75rem', color: '#9ca3af' }}>Laboratory reports</div>
                 </button>
               </div>
             </div>
@@ -659,72 +638,70 @@ function App() {
             <div style={{
               background: 'rgba(30, 30, 30, 0.6)',
               borderRadius: '0.5rem',
-              padding: '0.5rem',
+              padding: '1rem',
               border: '1px solid rgba(75, 85, 99, 0.3)',
-              backdropFilter: 'blur(10px)',
-              overflow: 'visible',
-              position: 'relative',
-              zIndex: 2
+              backdropFilter: 'blur(10px)'
             }}>
               <h3 style={{
-                fontSize: '0.85rem',
+                fontSize: '1rem',
                 fontWeight: '600',
                 color: '#f3f4f6',
-                marginBottom: '0.375rem',
+                marginBottom: '0.75rem',
                 fontFamily: '"Segoe UI", "Roboto", "Arial", sans-serif',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.375rem'
+                gap: '0.5rem'
               }}>
                 📝 {coverType === 'lab' ? 'Lab Report Details' : 'Assignment Details'}
               </h3>
               
-              <div style={{ display: 'grid', gap: '0.375rem' }}>
-                {/* Row 1: Assignment Name and Assignment No in one row */}
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '0.5rem' }}>
+              <div style={{ display: 'grid', gap: '0.5rem' }}>
+                {/* Row 1: Assignment Name */}
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: '600',
+                    color: '#f3f4f6',
+                    marginBottom: '0.375rem'
+                  }}>
+                    📝 {coverType === 'lab' ? 'Lab Report Name' : 'Assignment Name'}
+                  </label>
+                  <input
+                    id="assignment_name"
+                    type="text"
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      border: '2px solid rgba(75, 85, 99, 0.3)',
+                      borderRadius: '0.5rem',
+                      fontSize: '0.75rem',
+                      transition: 'all 0.2s',
+                      boxSizing: 'border-box',
+                      background: 'rgba(30, 30, 30, 0.8)',
+                      color: '#f3f4f6',
+                      backdropFilter: 'blur(10px)',
+                      outline: 'none',
+                      fontFamily: '"Segoe UI", "Roboto", "Arial", sans-serif'
+                    }}
+                    placeholder="Enter descriptive name..."
+                    value={formData.assignment_name || ''}
+                    onChange={handleInputChange}
+                    onFocus={(e) => e.target.style.border = '2px solid #dc2626'}
+                    onBlur={(e) => e.target.style.border = '2px solid rgba(75, 85, 99, 0.3)'}
+                    required
+                  />
+                </div>
+
+                {/* Row 2: Assignment No. and Course Title */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '0.5rem' }}>
                   <div>
                     <label style={{
                       display: 'block',
-                      fontSize: '0.75rem',
+                      fontSize: '0.875rem',
                       fontWeight: '600',
                       color: '#f3f4f6',
-                      marginBottom: '0.25rem'
-                    }}>
-                      📝 {coverType === 'lab' ? 'Lab Report Name' : 'Assignment Name'}
-                    </label>
-                    <input
-                      id="assignment_name"
-                      type="text"
-                      style={{
-                        width: '100%',
-                        padding: '0.7rem',
-                        border: '2px solid rgba(75, 85, 99, 0.3)',
-                        borderRadius: '0.4rem',
-                        fontSize: '0.75rem',
-                        transition: 'all 0.2s',
-                        boxSizing: 'border-box',
-                        background: 'rgba(30, 30, 30, 0.8)',
-                        color: '#f3f4f6',
-                        backdropFilter: 'blur(10px)',
-                        outline: 'none',
-                        fontFamily: '"Segoe UI", "Roboto", "Arial", sans-serif'
-                      }}
-                      placeholder="Enter descriptive name..."
-                      value={formData.assignment_name || ''}
-                      onChange={handleInputChange}
-                      onFocus={(e) => e.target.style.border = '2px solid #dc2626'}
-                      onBlur={(e) => e.target.style.border = '2px solid rgba(75, 85, 99, 0.3)'}
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label style={{
-                      display: 'block',
-                      fontSize: '0.75rem',
-                      fontWeight: '600',
-                      color: '#f3f4f6',
-                      marginBottom: '0.25rem'
+                      marginBottom: '0.375rem'
                     }}>
                       📄 {coverType === 'lab' ? 'Lab Report No.' : 'Assignment No.'}
                     </label>
@@ -733,9 +710,9 @@ function App() {
                       type="text"
                       style={{
                         width: '100%',
-                        padding: '0.7rem',
+                        padding: '0.5rem',
                         border: '2px solid rgba(75, 85, 99, 0.3)',
-                        borderRadius: '0.4rem',
+                        borderRadius: '0.5rem',
                         fontSize: '0.75rem',
                         transition: 'all 0.2s',
                         boxSizing: 'border-box',
@@ -753,17 +730,14 @@ function App() {
                       required
                     />
                   </div>
-                </div>
-
-                {/* Row 2: Course Title and Submission Date in one row */}
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '0.5rem' }}>
-                  <div style={{ position: 'relative', overflow: 'visible' }}>
+                  
+                  <div style={{ position: 'relative' }}>
                     <label style={{
                       display: 'block',
-                      fontSize: '0.75rem',
+                      fontSize: '0.875rem',
                       fontWeight: '600',
                       color: '#f3f4f6',
-                      marginBottom: '0.25rem'
+                      marginBottom: '0.375rem'
                     }}>
                       📚 Course Title
                     </label>
@@ -771,10 +745,10 @@ function App() {
                       type="text"
                       style={{
                         width: '100%',
-                        padding: '0.7rem',
+                        padding: '0.75rem 1rem',
                         border: '2px solid rgba(75, 85, 99, 0.3)',
-                        borderRadius: '0.4rem',
-                        fontSize: '0.75rem',
+                        borderRadius: '0.75rem',
+                        fontSize: '0.875rem',
                         transition: 'all 0.2s',
                         boxSizing: 'border-box',
                         background: 'rgba(30, 30, 30, 0.8)',
@@ -806,25 +780,25 @@ function App() {
                           top: '100%',
                           left: 0,
                           right: 0,
-                          background: 'rgba(20, 20, 20, 0.98)',
-                          border: '2px solid rgba(220, 38, 38, 0.5)',
-                          borderRadius: '0.5rem',
+                          background: 'rgba(20, 20, 20, 0.95)',
+                          border: '2px solid rgba(220, 38, 38, 0.3)',
+                          borderRadius: '0.75rem',
                           backdropFilter: 'blur(20px)',
-                          zIndex: 999999,
-                          maxHeight: '250px',
+                          zIndex: 1000,
+                          maxHeight: '300px',
                           overflowY: 'auto',
                           marginTop: '0.25rem',
-                          boxShadow: '0 20px 40px rgba(220, 38, 38, 0.4)'
+                          boxShadow: '0 10px 25px rgba(220, 38, 38, 0.2)'
                         }}>
                         {filteredCourses.map((course, index) => (
                           <div
                             key={course.code}
                             style={{
-                              padding: '0.6rem 0.75rem',
+                              padding: '0.75rem 1rem',
                               cursor: 'pointer',
                               borderBottom: index < filteredCourses.length - 1 ? '1px solid rgba(75, 85, 99, 0.2)' : 'none',
                               transition: 'all 0.2s',
-                              fontSize: '0.8rem'
+                              fontSize: '0.875rem'
                             }}
                             onMouseEnter={(e) => {
                               e.target.style.background = 'rgba(220, 38, 38, 0.1)';
@@ -834,10 +808,10 @@ function App() {
                             }}
                             onMouseDown={() => selectCourse(course)}
                           >
-                            <div style={{ color: '#fca5a5', fontWeight: '600', marginBottom: '0.125rem' }}>
+                            <div style={{ color: '#fca5a5', fontWeight: '600', marginBottom: '0.25rem' }}>
                               {course.code}
                             </div>
-                            <div style={{ color: '#d1d5db', fontSize: '0.75rem' }}>
+                            <div style={{ color: '#d1d5db', fontSize: '0.8rem' }}>
                               {course.title}
                             </div>
                           </div>
@@ -845,40 +819,42 @@ function App() {
                       </div>
                     )}
                   </div>
-                  
-                  <div>
-                    <label style={{
-                      display: 'block',
+                </div>
+
+                {/* Row 3: Submission Date */}
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '0.875rem',
+                    fontWeight: '600',
+                    color: '#f3f4f6',
+                    marginBottom: '0.375rem'
+                  }}>
+                    📅 Submission Date
+                  </label>
+                  <input
+                    id="submission_date"
+                    type="date"
+                    style={{
+                      width: '100%',
+                      maxWidth: '300px',
+                      padding: '0.5rem',
+                      border: '2px solid rgba(75, 85, 99, 0.3)',
+                      borderRadius: '0.5rem',
                       fontSize: '0.75rem',
-                      fontWeight: '600',
+                      transition: 'all 0.2s',
+                      boxSizing: 'border-box',
+                      background: 'rgba(30, 30, 30, 0.8)',
                       color: '#f3f4f6',
-                      marginBottom: '0.25rem'
-                    }}>
-                      📅 Submission Date
-                    </label>
-                    <input
-                      id="submission_date"
-                      type="date"
-                      style={{
-                        width: '100%',
-                        padding: '0.7rem',
-                        border: '2px solid rgba(75, 85, 99, 0.3)',
-                        borderRadius: '0.4rem',
-                        fontSize: '0.75rem',
-                        transition: 'all 0.2s',
-                        boxSizing: 'border-box',
-                        background: 'rgba(30, 30, 30, 0.8)',
-                        color: '#f3f4f6',
-                        backdropFilter: 'blur(10px)',
-                        outline: 'none'
-                      }}
-                      value={formData.submission_date || ''}
-                      onChange={handleInputChange}
-                      onFocus={(e) => e.target.style.border = '2px solid #dc2626'}
-                      onBlur={(e) => e.target.style.border = '2px solid rgba(75, 85, 99, 0.3)'}
-                      required
-                    />
-                  </div>
+                      backdropFilter: 'blur(10px)',
+                      outline: 'none'
+                    }}
+                    value={formData.submission_date || ''}
+                    onChange={handleInputChange}
+                    onFocus={(e) => e.target.style.border = '2px solid #dc2626'}
+                    onBlur={(e) => e.target.style.border = '2px solid rgba(75, 85, 99, 0.3)'}
+                    required
+                  />
                 </div>
               </div>
             </div>
@@ -887,40 +863,40 @@ function App() {
             <div style={{
               background: 'rgba(30, 30, 30, 0.6)',
               borderRadius: '0.5rem',
-              padding: '0.5rem',
+              padding: '1rem',
               border: '1px solid rgba(75, 85, 99, 0.3)',
               backdropFilter: 'blur(10px)'
             }}>
               <h3 style={{
-                fontSize: '0.85rem',
+                fontSize: '1rem',
                 fontWeight: '600',
                 color: '#f3f4f6',
-                marginBottom: '0.375rem',
+                marginBottom: '0.75rem',
                 fontFamily: '"Segoe UI", "Roboto", "Arial", sans-serif',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.375rem'
+                gap: '0.5rem'
               }}>
                 📤 Output Options
               </h3>
               
               {/* Output Type Selection */}
-              <div style={{ marginBottom: '0.375rem' }}>
+              <div>
                 <label style={{
                   display: 'block',
-                  fontSize: '0.75rem',
+                  fontSize: '0.875rem',
                   fontWeight: '600',
                   color: '#f3f4f6',
-                  marginBottom: '0.25rem'
+                  marginBottom: '0.375rem'
                 }}>
                   ✅ Output Type
                 </label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.375rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
                   <button
                     onClick={() => selectOutputType('cover')}
                     style={{
                       padding: '0.5rem',
-                      borderRadius: '0.4rem',
+                      borderRadius: '0.5rem',
                       border: `2px solid ${outputType === 'cover' ? '#dc2626' : 'rgba(75, 85, 99, 0.3)'}`,
                       background: outputType === 'cover' ? 'rgba(40, 20, 20, 0.8)' : 'rgba(30, 30, 30, 0.6)',
                       color: outputType === 'cover' ? '#fca5a5' : '#d1d5db',
@@ -929,22 +905,18 @@ function App() {
                       transition: 'all 0.2s',
                       fontSize: '0.75rem',
                       backdropFilter: 'blur(10px)',
-                      boxShadow: outputType === 'cover' ? '0 0 20px rgba(220, 38, 38, 0.3)' : 'none',
-                      minHeight: '15px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center'
+                      boxShadow: outputType === 'cover' ? '0 0 20px rgba(220, 38, 38, 0.3)' : 'none'
                     }}
                   >
-                    <div style={{ fontSize: '0.9rem', marginBottom: '0.125rem' }}>📄</div>
-                    <div style={{ fontWeight: '600', marginBottom: '0.125rem' }}>Cover Page Only</div>
+                    <div style={{ fontSize: '1rem', marginBottom: '0.25rem' }}>📄</div>
+                    <div style={{ fontWeight: '600' }}>Cover Page Only</div>
                     <div style={{ fontSize: '0.65rem', color: '#9ca3af' }}>Just the cover page</div>
                   </button>
                   <button
                     onClick={() => selectOutputType('merged')}
                     style={{
                       padding: '0.5rem',
-                      borderRadius: '0.4rem',
+                      borderRadius: '0.5rem',
                       border: `2px solid ${outputType === 'merged' ? '#dc2626' : 'rgba(75, 85, 99, 0.3)'}`,
                       background: outputType === 'merged' ? 'rgba(40, 20, 20, 0.8)' : 'rgba(30, 30, 30, 0.6)',
                       color: outputType === 'merged' ? '#fca5a5' : '#d1d5db',
@@ -953,15 +925,11 @@ function App() {
                       transition: 'all 0.2s',
                       fontSize: '0.75rem',
                       backdropFilter: 'blur(10px)',
-                      boxShadow: outputType === 'merged' ? '0 0 20px rgba(220, 38, 38, 0.3)' : 'none',
-                      minHeight: '15px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center'
+                      boxShadow: outputType === 'merged' ? '0 0 20px rgba(220, 38, 38, 0.3)' : 'none'
                     }}
                   >
-                    <div style={{ fontSize: '0.9rem', marginBottom: '0.125rem' }}>📤</div>
-                    <div style={{ fontWeight: '600', marginBottom: '0.125rem' }}>Complete Assignment</div>
+                    <div style={{ fontSize: '1rem', marginBottom: '0.25rem' }}>📤</div>
+                    <div style={{ fontWeight: '600' }}>Complete Assignment</div>
                     <div style={{ fontSize: '0.65rem', color: '#9ca3af' }}>Cover + uploaded file</div>
                   </button>
                 </div>
@@ -971,27 +939,26 @@ function App() {
               {outputType === 'merged' && (
                 <div style={{
                   background: 'rgba(20, 20, 20, 0.6)',
-                  borderRadius: '0.4rem',
-                  padding: '0.5rem',
+                  borderRadius: '0.75rem',
+                  padding: '1rem',
                   border: '2px dashed rgba(220, 38, 38, 0.4)',
                   textAlign: 'center',
-                  backdropFilter: 'blur(10px)',
-                  marginBottom: '0.4rem'
+                  backdropFilter: 'blur(10px)'
                 }}>
-                  <div style={{ fontSize: '1.2rem', marginBottom: '0.3rem' }}>📤</div>
+                  <div style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>📤</div>
                   <label htmlFor="assignment_file" style={{ cursor: 'pointer' }}>
                     <span style={{
                       background: 'linear-gradient(135deg, #dc2626, #b91c1c)',
                       color: 'white',
-                      padding: '0.4rem 0.8rem',
-                      borderRadius: '0.4rem',
+                      padding: '0.75rem 1.5rem',
+                      borderRadius: '0.75rem',
                       fontWeight: '600',
-                      fontSize: '0.75rem',
+                      fontSize: '0.875rem',
                       border: 'none',
                       cursor: 'pointer',
                       display: 'inline-block',
                       transition: 'all 0.2s',
-                      boxShadow: '0 3px 12px rgba(220, 38, 38, 0.3)'
+                      boxShadow: '0 4px 15px rgba(220, 38, 38, 0.3)'
                     }}>
                       Choose File (PDF, DOC, DOCX)
                     </span>
@@ -1004,11 +971,11 @@ function App() {
                     />
                   </label>
                   {file && (
-                    <div style={{ marginTop: '0.3rem', fontSize: '0.75rem', color: '#f3f4f6' }}>
+                    <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#f3f4f6' }}>
                       📄 {file.name}
                     </div>
                   )}
-                  <p style={{ fontSize: '0.65rem', color: '#9ca3af', marginTop: '0.3rem', margin: '0.3rem 0 0 0' }}>
+                  <p style={{ fontSize: '0.65rem', color: '#9ca3af', marginTop: '0.25rem', margin: '0.25rem 0 0 0' }}>
                     Upload your assignment file (PDF, DOC, DOCX) to merge with cover page
                   </p>
                 </div>
@@ -1018,7 +985,8 @@ function App() {
               <div className="action-buttons" style={{ 
                 display: 'flex', 
                 flexDirection: 'column', 
-                gap: '0.4rem'
+                gap: '0.5rem', 
+                paddingTop: '0.5rem'
               }}>
                 <button
                   onClick={generatePDF}
@@ -1027,28 +995,27 @@ function App() {
                     flex: '1',
                     background: 'linear-gradient(135deg, #dc2626, #b91c1c)',
                     color: 'white',
-                    padding: '0.5rem 0.8rem',
-                    borderRadius: '0.4rem',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '0.5rem',
                     fontWeight: '600',
                     border: 'none',
                     cursor: isLoading ? 'not-allowed' : 'pointer',
                     opacity: isLoading ? 0.5 : 1,
                     transition: 'all 0.2s',
-                    boxShadow: '0 6px 20px rgba(220, 38, 38, 0.4)',
+                    boxShadow: '0 8px 25px rgba(220, 38, 38, 0.4)',
                     fontSize: '0.75rem',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '0.3rem',
-                    minHeight: '16px'
+                    gap: '0.25rem'
                   }}
                 >
                   {isLoading ? (
                     <>
                       <div style={{
                         animation: 'spin 1s linear infinite',
-                        width: '0.9rem',
-                        height: '0.9rem',
+                        width: '1.25rem',
+                        height: '1.25rem',
                         border: '2px solid transparent',
                         borderTop: '2px solid white',
                         borderRadius: '50%'
@@ -1066,10 +1033,10 @@ function App() {
                 <button
                   onClick={clearAllData}
                   style={{
-                    padding: '0.5rem 0.8rem',
+                    padding: '0.5rem 1rem',
                     border: '2px solid rgba(75, 85, 99, 0.4)',
                     color: '#d1d5db',
-                    borderRadius: '0.4rem',
+                    borderRadius: '0.5rem',
                     fontWeight: '600',
                     background: 'rgba(30, 30, 30, 0.6)',
                     cursor: 'pointer',
@@ -1078,9 +1045,8 @@ function App() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '0.3rem',
-                    backdropFilter: 'blur(10px)',
-                    minHeight: '16px'
+                    gap: '0.25rem',
+                    backdropFilter: 'blur(10px)'
                   }}
                 >
                   <span>↺</span>
@@ -1092,7 +1058,7 @@ function App() {
         </div>
           
           {/* Right Sidebar */}
-          <div style={{ display: 'grid', gap: '0.5rem' }}>
+          <div style={{ display: 'grid', gap: '1rem' }}>
             
             {/* Student Information Section */}
             <div style={{
@@ -1100,7 +1066,7 @@ function App() {
               backdropFilter: 'blur(20px)',
               borderRadius: '0.5rem',
               boxShadow: '0 20px 25px -5px rgba(220, 38, 38, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.3)',
-              padding: '0.75rem',
+              padding: '1rem',
               border: '1px solid rgba(220, 38, 38, 0.2)',
               position: 'relative',
               overflow: 'hidden'
@@ -1118,15 +1084,15 @@ function App() {
               
               <div style={{ position: 'relative', zIndex: 1 }}>
                 <h3 style={{
-                  fontSize: '0.9rem',
+                  fontSize: '1rem',
                   fontWeight: '600',
                   color: '#f3f4f6',
-                  marginBottom: '0.375rem',
+                  marginBottom: '0.75rem',
                   fontFamily: '"Segoe UI", "Roboto", "Arial", sans-serif',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  textAlign: 'left'
+                  textAlign: 'center'
                 }}>
                   👤 Student Information
                 </h3>
@@ -1136,7 +1102,7 @@ function App() {
                   <div>
                     <label style={{
                       display: 'block',
-                      fontSize: '0.8rem',
+                      fontSize: '0.875rem',
                       fontWeight: '600',
                       color: '#f3f4f6',
                       marginBottom: '0.375rem'
@@ -1148,10 +1114,10 @@ function App() {
                       type="text"
                       style={{
                         width: '100%',
-                        padding: '0.7rem',
+                        padding: '0.5rem',
                         border: '2px solid rgba(75, 85, 99, 0.3)',
                         borderRadius: '0.5rem',
-                        fontSize: '0.8rem',
+                        fontSize: '0.75rem',
                         transition: 'all 0.2s',
                         boxSizing: 'border-box',
                         background: 'rgba(30, 30, 30, 0.8)',
@@ -1172,7 +1138,7 @@ function App() {
                   <div>
                     <label style={{
                       display: 'block',
-                      fontSize: '0.8rem',
+                      fontSize: '0.875rem',
                       fontWeight: '600',
                       color: '#f3f4f6',
                       marginBottom: '0.375rem'
@@ -1184,10 +1150,10 @@ function App() {
                       type="text"
                       style={{
                         width: '100%',
-                        padding: '0.7rem',
+                        padding: '0.5rem',
                         border: '2px solid rgba(75, 85, 99, 0.3)',
                         borderRadius: '0.5rem',
-                        fontSize: '0.8rem',
+                        fontSize: '0.75rem',
                         transition: 'all 0.2s',
                         boxSizing: 'border-box',
                         background: 'rgba(30, 30, 30, 0.8)',
@@ -1204,26 +1170,26 @@ function App() {
                     />
                   </div>
 
-                  {/* Department - Hidden */}
-                  <div style={{display: 'none'}}>
+                  {/* Department */}
+                  <div>
                     <label style={{
                       display: 'block',
-                      fontSize: '0.8rem',
+                      fontSize: '0.875rem',
                       fontWeight: '600',
                       color: '#f3f4f6',
                       marginBottom: '0.375rem'
                     }}>
-                      🏢 Department
+                      �️ Department
                     </label>
                     <input
                       id="department"
                       type="text"
                       style={{
                         width: '100%',
-                        padding: '0.6rem',
+                        padding: '0.5rem',
                         border: '2px solid rgba(75, 85, 99, 0.3)',
                         borderRadius: '0.5rem',
-                        fontSize: '0.8rem',
+                        fontSize: '0.75rem',
                         transition: 'all 0.2s',
                         boxSizing: 'border-box',
                         background: 'rgba(30, 30, 30, 0.8)',
@@ -1240,8 +1206,8 @@ function App() {
                     />
                   </div>
 
-                  {/* Batch, Section, Session in one row - More compact */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.375rem' }}>
+                  {/* Batch, Section, Session in one row */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem' }}>
                     <div>
                       <label style={{
                         display: 'block',
@@ -1257,10 +1223,10 @@ function App() {
                         type="text"
                         style={{
                           width: '100%',
-                          padding: '0.6rem',
+                          padding: '0.4rem',
                           border: '2px solid rgba(75, 85, 99, 0.3)',
                           borderRadius: '0.4rem',
-                          fontSize: '0.75rem',
+                          fontSize: '0.7rem',
                           transition: 'all 0.2s',
                           boxSizing: 'border-box',
                           background: 'rgba(30, 30, 30, 0.8)',
@@ -1285,17 +1251,17 @@ function App() {
                         color: '#f3f4f6',
                         marginBottom: '0.25rem'
                       }}>
-                        📘 Section
+                        � Section
                       </label>
                       <input
                         id="section"
                         type="text"
                         style={{
                           width: '100%',
-                          padding: '0.6rem',
+                          padding: '0.4rem',
                           border: '2px solid rgba(75, 85, 99, 0.3)',
                           borderRadius: '0.4rem',
-                          fontSize: '0.75rem',
+                          fontSize: '0.7rem',
                           transition: 'all 0.2s',
                           boxSizing: 'border-box',
                           background: 'rgba(30, 30, 30, 0.8)',
@@ -1327,10 +1293,10 @@ function App() {
                         type="text"
                         style={{
                           width: '100%',
-                          padding: '0.6rem',
+                          padding: '0.4rem',
                           border: '2px solid rgba(75, 85, 99, 0.3)',
                           borderRadius: '0.4rem',
-                          fontSize: '0.75rem',
+                          fontSize: '0.7rem',
                           transition: 'all 0.2s',
                           boxSizing: 'border-box',
                           background: 'rgba(30, 30, 30, 0.8)',
@@ -1357,7 +1323,7 @@ function App() {
               backdropFilter: 'blur(20px)',
               borderRadius: '0.5rem',
               boxShadow: '0 20px 25px -5px rgba(220, 38, 38, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.3)',
-              padding: '0.75rem',
+              padding: '1rem',
               border: '1px solid rgba(220, 38, 38, 0.2)',
               position: 'relative',
               overflow: 'hidden'
@@ -1375,36 +1341,32 @@ function App() {
               
               <div style={{ position: 'relative', zIndex: 1 }}>
                 <h3 style={{
-                  fontSize: '0.9rem',
+                  fontSize: '1rem',
                   fontWeight: '600',
                   color: '#f3f4f6',
-                  marginBottom: '0.375rem',
+                  marginBottom: '0.75rem',
                   fontFamily: '"Segoe UI", "Roboto", "Arial", sans-serif',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  textAlign: 'left'
+                  textAlign: 'center'
                 }}>
                   🎨 Template Style
                 </h3>
 
                 {/* 2x2 Template Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                   {/* Template 1 - Modern */}
                   <div
                     style={{
-                      padding: '0.5rem',
-                      borderRadius: '0.4rem',
+                      padding: '0.75rem',
+                      borderRadius: '0.5rem',
                       border: selectedTemplate === 'template1' ? '2px solid #dc2626' : '2px solid rgba(75, 85, 99, 0.3)',
                       background: selectedTemplate === 'template1' ? 'rgba(220, 38, 38, 0.1)' : 'rgba(20, 20, 20, 0.8)',
                       cursor: 'pointer',
                       transition: 'all 0.2s',
                       backdropFilter: 'blur(10px)',
-                      textAlign: 'center',
-                      minHeight: '20px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center'
+                      textAlign: 'center'
                     }}
                     onClick={() => setSelectedTemplate('template1')}
                     onMouseEnter={(e) => {
@@ -1418,50 +1380,40 @@ function App() {
                       }
                     }}
                   >
-                    {/* Demo Image */}
                     <div style={{
-                      width: '100%',
-                      height: '100px',
-                      marginBottom: '0.25rem',
-                      borderRadius: '0.25rem',
-                      overflow: 'hidden',
-                      border: '1px solid rgba(75, 85, 99, 0.2)'
+                      fontSize: '0.7rem',
+                      fontWeight: '600',
+                      color: selectedTemplate === 'template1' ? '#fca5a5' : '#f3f4f6',
+                      marginBottom: '0.25rem'
                     }}>
-                      <img 
-                        src="/temp-1.jpg" 
-                        alt="Template 1 Demo"
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'contain',
-                          objectPosition: 'center'
-                        }}
-                      />
+                      Modern
+                    </div>
+                    <div style={{
+                      fontSize: '0.6rem',
+                      color: '#9ca3af'
+                    }}>
+                      Clean & Professional
                     </div>
                   </div>
 
                   {/* Template 2 - Coming Soon */}
                   <div
                     style={{
-                      padding: '0.5rem',
-                      borderRadius: '0.4rem',
+                      padding: '0.75rem',
+                      borderRadius: '0.5rem',
                       border: '2px solid rgba(75, 85, 99, 0.3)',
                       background: 'rgba(20, 20, 20, 0.5)',
                       textAlign: 'center',
-                      opacity: '0.6',
-                      minHeight: '20px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center'
+                      opacity: '0.6'
                     }}
                   >
                     <div style={{
                       fontSize: '0.7rem',
                       fontWeight: '600',
                       color: '#9ca3af',
-                      marginBottom: '0.125rem'
+                      marginBottom: '0.25rem'
                     }}>
-                      📄 Classic
+                      Classic
                     </div>
                     <div style={{
                       fontSize: '0.6rem',
@@ -1474,25 +1426,21 @@ function App() {
                   {/* Template 3 - Coming Soon */}
                   <div
                     style={{
-                      padding: '0.5rem',
-                      borderRadius: '0.4rem',
+                      padding: '0.75rem',
+                      borderRadius: '0.5rem',
                       border: '2px solid rgba(75, 85, 99, 0.3)',
                       background: 'rgba(20, 20, 20, 0.5)',
                       textAlign: 'center',
-                      opacity: '0.6',
-                      minHeight: '20px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center'
+                      opacity: '0.6'
                     }}
                   >
                     <div style={{
                       fontSize: '0.7rem',
                       fontWeight: '600',
                       color: '#9ca3af',
-                      marginBottom: '0.125rem'
+                      marginBottom: '0.25rem'
                     }}>
-                      🎯 Minimal
+                      Minimal
                     </div>
                     <div style={{
                       fontSize: '0.6rem',
@@ -1505,25 +1453,21 @@ function App() {
                   {/* Template 4 - Coming Soon */}
                   <div
                     style={{
-                      padding: '0.5rem',
-                      borderRadius: '0.4rem',
+                      padding: '0.75rem',
+                      borderRadius: '0.5rem',
                       border: '2px solid rgba(75, 85, 99, 0.3)',
                       background: 'rgba(20, 20, 20, 0.5)',
                       textAlign: 'center',
-                      opacity: '0.6',
-                      minHeight: '20px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center'
+                      opacity: '0.6'
                     }}
                   >
                     <div style={{
                       fontSize: '0.7rem',
                       fontWeight: '600',
                       color: '#9ca3af',
-                      marginBottom: '0.125rem'
+                      marginBottom: '0.25rem'
                     }}>
-                      🎨 Creative
+                      Creative
                     </div>
                     <div style={{
                       fontSize: '0.6rem',
