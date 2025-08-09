@@ -86,6 +86,21 @@ function App() {
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [showCourseDropdown, setShowCourseDropdown] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(localStorage.getItem('selectedTemplate') || 'template1');
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  
+  // Mobile detection
+  const isMobile = windowWidth <= 768;
+  const isExtraSmall = windowWidth <= 480;
+
+  // Handle window resize for responsive design
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Template preview component
   const renderTemplatePreview = () => {
@@ -440,6 +455,22 @@ function App() {
       fontFamily: '"Segoe UI", "Roboto", "Arial", sans-serif',
       position: 'relative'
     }}>
+      {/* Mobile dropdown overlay */}
+      {showCourseDropdown && isMobile && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.7)',
+            zIndex: 999998,
+            backdropFilter: 'blur(5px)'
+          }}
+          onClick={() => setShowCourseDropdown(false)}
+        />
+      )}
       {/* Animated Background Elements */}
       <div style={{
         position: 'absolute',
@@ -514,9 +545,9 @@ function App() {
       <main style={{ maxWidth: '1300px', margin: '0 auto', padding: '0.25rem', position: 'relative', zIndex: 5 }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 320px',
+          gridTemplateColumns: isMobile ? '1fr' : '1fr 320px',
           gap: '0.75rem'
-        }}>
+        }} className="main-grid">
           
           {/* Main Form Card */}
           <div style={{
@@ -528,7 +559,7 @@ function App() {
             border: '1px solid rgba(220, 38, 38, 0.2)',
             position: 'relative',
             overflow: 'hidden'
-          }}>
+          }} className="form-section">
           
           {/* Glass morphism overlay */}
           <div style={{
@@ -602,7 +633,7 @@ function App() {
                 📝 Select Cover Type
               </h3>
               
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.375rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.375rem' }} className="cover-type-grid">
                 <button
                   onClick={() => setCoverType('assignment')}
                   style={{
@@ -681,7 +712,7 @@ function App() {
               
               <div style={{ display: 'grid', gap: '0.375rem' }}>
                 {/* Row 1: Assignment Name and Assignment No in one row */}
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '0.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: isExtraSmall ? '1fr' : '2fr 1fr', gap: '0.5rem' }} className="assignment-row">
                   <div>
                     <label style={{
                       display: 'block',
@@ -756,7 +787,7 @@ function App() {
                 </div>
 
                 {/* Row 2: Course Title and Submission Date in one row */}
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '0.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: isExtraSmall ? '1fr' : '2fr 1fr', gap: '0.5rem' }} className="course-row">
                   <div style={{ position: 'relative', overflow: 'visible' }}>
                     <label style={{
                       display: 'block',
@@ -802,29 +833,57 @@ function App() {
                       <div 
                         className="course-dropdown"
                         style={{
-                          position: 'absolute',
-                          top: '100%',
-                          left: 0,
-                          right: 0,
+                          position: isMobile ? 'fixed' : 'absolute',
+                          top: isMobile ? '50%' : '100%',
+                          left: isMobile ? '50%' : 0,
+                          right: isMobile ? 'auto' : 0,
+                          transform: isMobile ? 'translate(-50%, -50%)' : 'none',
+                          width: isMobile ? '90vw' : 'auto',
                           background: 'rgba(20, 20, 20, 0.98)',
                           border: '2px solid rgba(220, 38, 38, 0.5)',
                           borderRadius: '0.5rem',
                           backdropFilter: 'blur(20px)',
                           zIndex: 999999,
-                          maxHeight: '250px',
+                          maxHeight: isMobile ? '70vh' : '250px',
                           overflowY: 'auto',
-                          marginTop: '0.25rem',
+                          marginTop: isMobile ? 0 : '0.25rem',
                           boxShadow: '0 20px 40px rgba(220, 38, 38, 0.4)'
                         }}>
+                        {isMobile && (
+                          <div style={{
+                            padding: '0.75rem',
+                            borderBottom: '1px solid rgba(75, 85, 99, 0.3)',
+                            textAlign: 'center',
+                            position: 'sticky',
+                            top: 0,
+                            background: 'rgba(20, 20, 20, 0.98)',
+                            zIndex: 1
+                          }}>
+                            <button
+                              onClick={() => setShowCourseDropdown(false)}
+                              style={{
+                                background: 'rgba(220, 38, 38, 0.2)',
+                                border: '1px solid rgba(220, 38, 38, 0.5)',
+                                borderRadius: '0.25rem',
+                                color: '#fca5a5',
+                                padding: '0.5rem 1rem',
+                                fontSize: '0.75rem',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              ✕ Close
+                            </button>
+                          </div>
+                        )}
                         {filteredCourses.map((course, index) => (
                           <div
                             key={course.code}
                             style={{
-                              padding: '0.6rem 0.75rem',
+                              padding: isMobile ? '0.8rem 0.75rem' : '0.6rem 0.75rem',
                               cursor: 'pointer',
                               borderBottom: index < filteredCourses.length - 1 ? '1px solid rgba(75, 85, 99, 0.2)' : 'none',
                               transition: 'all 0.2s',
-                              fontSize: '0.8rem'
+                              fontSize: isMobile ? '0.85rem' : '0.8rem'
                             }}
                             onMouseEnter={(e) => {
                               e.target.style.background = 'rgba(220, 38, 38, 0.1)';
@@ -833,11 +892,12 @@ function App() {
                               e.target.style.background = 'transparent';
                             }}
                             onMouseDown={() => selectCourse(course)}
+                            onTouchStart={() => selectCourse(course)}
                           >
                             <div style={{ color: '#fca5a5', fontWeight: '600', marginBottom: '0.125rem' }}>
                               {course.code}
                             </div>
-                            <div style={{ color: '#d1d5db', fontSize: '0.75rem' }}>
+                            <div style={{ color: '#d1d5db', fontSize: isMobile ? '0.8rem' : '0.75rem' }}>
                               {course.title}
                             </div>
                           </div>
@@ -915,7 +975,7 @@ function App() {
                 }}>
                   ✅ Output Type
                 </label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.375rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.375rem' }} className="output-type-grid">
                   <button
                     onClick={() => selectOutputType('cover')}
                     style={{
@@ -1241,7 +1301,7 @@ function App() {
                   </div>
 
                   {/* Batch, Section, Session in one row - More compact */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.375rem' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: isExtraSmall ? '1fr' : '1fr 1fr 1fr', gap: '0.375rem' }} className="student-info-row">
                     <div>
                       <label style={{
                         display: 'block',
@@ -1322,9 +1382,8 @@ function App() {
                       }}>
                         📆 Session
                       </label>
-                      <input
+                      <select
                         id="session"
-                        type="text"
                         style={{
                           width: '100%',
                           padding: '0.6rem',
@@ -1336,15 +1395,19 @@ function App() {
                           background: 'rgba(30, 30, 30, 0.8)',
                           color: '#f3f4f6',
                           backdropFilter: 'blur(10px)',
-                          outline: 'none'
+                          outline: 'none',
+                          cursor: 'pointer'
                         }}
-                        placeholder="2021-22"
                         value={formData.session || ''}
                         onChange={handleInputChange}
                         onFocus={(e) => e.target.style.border = '2px solid #dc2626'}
                         onBlur={(e) => e.target.style.border = '2px solid rgba(75, 85, 99, 0.3)'}
                         required
-                      />
+                      >
+                        <option value="" style={{ background: '#1f2937', color: '#f3f4f6' }}>Select Session</option>
+                        <option value="Spring 2025" style={{ background: '#1f2937', color: '#f3f4f6' }}>Spring 2025</option>
+                        <option value="Fall 2025" style={{ background: '#1f2937', color: '#f3f4f6' }}>Fall 2025</option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -1389,7 +1452,7 @@ function App() {
                 </h3>
 
                 {/* 2x2 Template Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: isExtraSmall ? '1fr' : '1fr 1fr', gap: '0.5rem' }} className="template-grid">
                   {/* Template 1 - Modern */}
                   <div
                     style={{
@@ -1558,6 +1621,24 @@ function App() {
       </footer>
 
       <style>{`
+        * {
+          -webkit-tap-highlight-color: transparent;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+        
+        input, textarea {
+          -webkit-user-select: text;
+          -khtml-user-select: text;
+          -moz-user-select: text;
+          -ms-user-select: text;
+          user-select: text;
+        }
+        
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
@@ -1568,16 +1649,132 @@ function App() {
           filter: brightness(1.1);
         }
         
+        button:active {
+          transform: translateY(0);
+          filter: brightness(0.95);
+        }
+        
         input:focus, select:focus {
           outline: none;
           border-color: #dc2626 !important;
           box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2) !important;
         }
         
+        /* Touch-friendly button sizing */
+        button {
+          min-height: 44px;
+          min-width: 44px;
+          touch-action: manipulation;
+        }
+        
+        /* Touch-friendly input sizing */
+        input, select, textarea {
+          min-height: 44px;
+          touch-action: manipulation;
+        }
+        
+        /* Prevent zoom on input focus for iOS */
+        input[type="text"], input[type="email"], input[type="number"], input[type="date"], input[type="time"], select, textarea {
+          font-size: 16px;
+        }
+        
         @media (max-width: 768px) {
           .footer-links {
             flex-direction: column;
             gap: 0.5rem;
+          }
+          
+          /* Mobile layout adjustments */
+          main {
+            padding: 0.5rem !important;
+          }
+          
+          /* Stack sidebar below main content on mobile */
+          .main-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+          }
+          
+          /* Responsive header */
+          header h1 {
+            fontSize: 1.25rem !important;
+            text-align: center !important;
+          }
+          
+          /* Mobile form adjustments */
+          .form-section {
+            padding: 0.75rem !important;
+          }
+          
+          /* Mobile button adjustments */
+          .cover-type-grid {
+            grid-template-columns: 1fr !important;
+            gap: 0.5rem !important;
+          }
+          
+          .output-type-grid {
+            grid-template-columns: 1fr !important;
+            gap: 0.5rem !important;
+          }
+          
+          /* Mobile dropdown adjustments */
+          .course-dropdown {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            width: 90vw !important;
+            max-width: none !important;
+            max-height: 80vh !important;
+            z-index: 999999 !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          /* Extra small devices */
+          header h1 {
+            fontSize: 1rem !important;
+          }
+          
+          .form-section {
+            padding: 0.5rem !important;
+          }
+          
+          /* Single column layout for very small screens */
+          .assignment-row {
+            grid-template-columns: 1fr !important;
+          }
+          
+          .course-row {
+            grid-template-columns: 1fr !important;
+          }
+          
+          .student-info-row {
+            grid-template-columns: 1fr !important;
+          }
+          
+          .template-grid {
+            grid-template-columns: 1fr !important;
+          }
+          
+          /* Very small screen optimizations */
+          .form-section {
+            margin: 0.25rem !important;
+            padding: 0.5rem !important;
+          }
+          
+          /* Smaller font sizes for mobile */
+          h3 {
+            fontSize: 0.8rem !important;
+          }
+          
+          label {
+            fontSize: 0.7rem !important;
+          }
+          
+          input, button {
+            fontSize: 0.8rem !important;
+            padding: 0.75rem !important;
           }
         }
 
