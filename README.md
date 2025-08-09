@@ -47,7 +47,7 @@ A modern, full-stack web application that automatically generates professional c
 
 ## 🚀 Live Demo
 
-**🌐 [Visit Assignment BaBa Live](https://assignment-cover-generator.vercel.app)**
+**🌐 [Visit Assignment BaBa Live](https://assignment-cover-generator-5q2g.vercel.app)**
 
 ---
 
@@ -388,7 +388,7 @@ copies or substantial portions of the Software.
 
 **⭐ Star this repository if you found it helpful!**
 
-**🔗 [Live Demo](https://assignment-cover-generator.vercel.app) | [Report Bug](https://github.com/Rahexa/assignment-cover-generator/issues) | [Request Feature](https://github.com/Rahexa/assignment-cover-generator/issues)**
+**🔗 [Live Demo](https://assignment-cover-generator-5q2g.vercel.app) | [Report Bug](https://github.com/Rahexa/assignment-cover-generator/issues) | [Request Feature](https://github.com/Rahexa/assignment-cover-generator/issues)**
 
 **Made with ❤️ by [Rahexa](https://github.com/Rahexa)**
 
