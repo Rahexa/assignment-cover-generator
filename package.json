@@ -2,6 +2,9 @@
   "name": "assignment-cover-generator",
   "version": "1.0.0",
   "description": "Assignment and Lab Report Cover Generator",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "cd frontend && npm run dev",
