@@ -6,7 +6,7 @@ A modern, full-stack web application that automatically generates professional c
 
 ![Assignment BaBa Demo](https://img.shields.io/badge/Status-Live-brightgreen)
 ![React](https://img.shields.io/badge/React-18+-blue)
-![Node.js](https://img.shields.io/badge/Node.js-18+-green)
+![Node.js](https://img.shields.io/badge/Node.js-22+-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
@@ -71,7 +71,7 @@ A modern, full-stack web application that automatically generates professional c
 ## 🛠️ Quick Start
 
 ### Prerequisites
-- Node.js 18+ and npm
+- Node.js 22+ and npm
 - Git
 
 ### Installation
@@ -165,7 +165,7 @@ Our application includes **60+ courses** across multiple departments:
 - **Storage**: localStorage for form persistence
 
 ### Backend
-- **Runtime**: Node.js 18+
+- **Runtime**: Node.js 22+
 - **Framework**: Express.js
 - **PDF Generation**: Puppeteer/HTML-PDF
 - **File Processing**: Multer for uploads
