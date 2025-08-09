@@ -23,7 +23,7 @@ try {
 
 // Enable CORS for all routes
 app.use(cors({
-  origin: ['http://localhost:5175', 'http://localhost:5176', 'http://localhost:3000'],
+  origin: ['http://localhost:5175', 'http://localhost:5176', 'http://localhost:3000', 'http://localhost:5180'],
   credentials: true
 }));
 
