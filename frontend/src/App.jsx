@@ -400,7 +400,10 @@ function App() {
 
       const response = await fetch('http://localhost:3001/api/generate', {
         method: 'POST',
-        body: formDataToSend
+        body: formDataToSend,
+        headers: {
+          // Don't set Content-Type header when sending FormData
+        }
       });
 
       if (!response.ok) {
@@ -442,7 +445,20 @@ function App() {
       
     } catch (error) {
       console.error('Error generating PDF:', error);
-      setError(`Failed to generate PDF: ${error.message}`);
+      
+      let errorMessage = 'Failed to generate PDF: ';
+      
+      if (error.name === 'TypeError' && error.message.includes('NetworkError')) {
+        errorMessage += 'Cannot connect to the server. Please make sure the backend server is running on http://localhost:3001';
+      } else if (error.message.includes('CORS')) {
+        errorMessage += 'CORS error. Please make sure the backend server is configured to allow requests from this origin.';
+      } else if (error.message.includes('Failed to fetch')) {
+        errorMessage += 'Network error. Please check if the backend server is running and accessible.';
+      } else {
+        errorMessage += error.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
