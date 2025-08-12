@@ -1,6 +1,7 @@
 ﻿const express = require('express');
 const { PDFDocument } = require('pdf-lib');
-const puppeteer = require('puppeteer');
+const chromium = require('@sparticuz/chromium');
+const puppeteer = require('puppeteer-core');
 const multer = require('multer');
 const mammoth = require('mammoth');
 const fs = require('fs-extra');
@@ -438,3 +439,4 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+
