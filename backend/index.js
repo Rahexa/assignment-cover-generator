@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const { PDFDocument } = require('pdf-lib');
 const puppeteer = require('puppeteer');
 const multer = require('multer');
@@ -438,3 +438,10 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+
+ 
+ / /   R o o t   e n d p o i n t  
+ a p p . g e t ( ' / ' ,   ( r e q ,   r e s )   = >   {  
+     r e s . j s o n ( {   m e s s a g e :   ' A s s i g n m e n t   C o v e r   G e n e r a t o r   B a c k e n d   A P I ' ,   s t a t u s :   ' r u n n i n g '   } ) ;  
+ } ) ;  
+ 
